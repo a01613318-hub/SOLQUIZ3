@@ -29,9 +29,11 @@ def user_input_features():
 
     City = st.text_input("Ingresa el nombre de la ciudad:")
 
-    filtrado = df[df['city'].str.lower() == city_input.lower()]
-    st.write(filtrado.iloc[0])
-    )
+    filtrado = data[data['city'].str.lower() == City.lower()]
+    if not filtrado.empty:
+        st.write(filtrado.iloc[0])
+    else:
+        st.write("Ciudad no encontrada en el dataset.")
 
     user_input_data = {
         "Year": Year,
@@ -62,3 +64,4 @@ modelo.fit(X_train, y_train)
 prediccion = modelo.predict(df)[0]
 
 st.subheader("Predicción de temperatura")
+st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
