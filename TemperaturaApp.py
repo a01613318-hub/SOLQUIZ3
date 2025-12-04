@@ -1,59 +1,67 @@
+import numpy as np
 import streamlit as st
 import pandas as pd
-import numpy as np
-from sklearn.tree import DecisionTreeRegressor  # O el modelo que uses
-import joblib  # Si quieres cargar un modelo entrenado
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 
-st.title("Predicción de Temperatura")
+st.write("# Predicción de Temperatura en México")
+st.image("quiz.jpg", caption="Predicción de temperatura")
 
-# Función para capturar entradas del usuario
+st.header("Selecciona los datos")
+
 def user_input_features():
-    # Selección de ciudad
-    City = st.selectbox("Selecciona la ciudad", ["Ciudad1", "Ciudad2", "Ciudad3"])
-    
-    # Año y mes
-    Year = st.number_input("Año", min_value=2000, max_value=2050, value=2025)
-    Month = st.number_input("Mes", min_value=1, max_value=12, value=12)
-    
-    # Crear DataFrame con las entradas
-    data = {
-        "City": City,
-        "Year": Year,
-        "Month": Month
-    }
-    df = pd.DataFrame(data, index=[0])
-    
-    # Convertir ciudad a código numérico
-    df["City_num"] = df["City"].astype('category').cat.codes
-    
-    return df
 
-# Obtener los datos del usuario
+    Year = st.number_input(
+        "Año:",
+        min_value=1700,
+        max_value=2025,
+        value=2000,
+        step=1,
+    )
+
+    Month = st.number_input(
+        "Mes (1-12):",
+        min_value=1,
+        max_value=12,
+        value=1,
+        step=1,
+    )
+
+    City_num = st.number_input(
+        "Ciudad (valor numérico):",
+        min_value=1,
+        max_value=100,
+        value=1,
+        step=1,
+    )
+
+    user_input_data = {
+        "Year": Year,
+        "Month": Month,
+        "City": City,
+    }
+
+    features = pd.DataFrame(user_input_data, index=[0])
+    return features
+
+
 df = user_input_features()
 
-st.subheader("Entradas del usuario")
-st.write(df)
+data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
-# Preparar las variables para el modelo
-X = df[["Year", "Month", "City_num"]]
+X = data[["Year", "Month", "City"]]
+y = data["AverageTemperature"]
 
-# Cargar modelo (opcional) o entrenar uno de ejemplo
-# modelo = joblib.load("modelo_temperatura.pkl")
 
-# Para ejemplo, entrenamos un modelo dummy
-# Nota: En producción, reemplazar con tu modelo real
-dummy_data = pd.DataFrame({
-    "Year": [2023, 2024, 2025],
-    "Month": [1, 6, 12],
-    "City_num": [0, 1, 2],
-    "Temp": [20, 25, 30]
-})
-model = DecisionTreeRegressor()
-model.fit(dummy_data[["Year", "Month", "City_num"]], dummy_data["Temp"])
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=1613726
+)
 
-# Predicción
-prediction = model.predict(X)
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)
 
-st.subheader("Predicción de Temperatura")
-st.write(f"La temperatura estimada es: {prediction[0]:.2f} °C")
 
+prediccion = modelo.predict(df)[0]
+
+st.subheader("Predicción de temperatura")
+st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
