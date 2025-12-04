@@ -1,60 +1,59 @@
 import streamlit as st
 import pandas as pd
-from sklearn.tree import DecisionTreeRegressor
+import numpy as np
+from sklearn.tree import DecisionTreeRegressor  # O el modelo que uses
+import joblib  # Si quieres cargar un modelo entrenado
 
 st.title("Predicción de Temperatura")
 
+# Función para capturar entradas del usuario
 def user_input_features():
     # Selección de ciudad
     City = st.selectbox("Selecciona la ciudad", ["Ciudad1", "Ciudad2", "Ciudad3"])
     
-  
+    # Año y mes
     Year = st.number_input("Año", min_value=2000, max_value=2050, value=2025)
     Month = st.number_input("Mes", min_value=1, max_value=12, value=12)
     
-
-    df = pd.DataFrame({"City": [City], "Year": [Year], "Month": [Month]})
+    # Crear DataFrame con las entradas
+    data = {
+        "City": City,
+        "Year": Year,
+        "Month": Month
+    }
+    df = pd.DataFrame(data, index=[0])
+    
+    # Convertir ciudad a código numérico
+    df["City_num"] = df["City"].astype('category').cat.codes
+    
     return df
 
+# Obtener los datos del usuario
 df = user_input_features()
 
 st.subheader("Entradas del usuario")
 st.write(df)
 
+# Preparar las variables para el modelo
+X = df[["Year", "Month", "City_num"]]
 
-df_encoded = pd.get_dummies(df, columns=["City"])
+# Cargar modelo (opcional) o entrenar uno de ejemplo
+# modelo = joblib.load("modelo_temperatura.pkl")
 
-st.subheader("Datos preparados para el modelo")
-st.write(df_encoded)
-
+# Para ejemplo, entrenamos un modelo dummy
+# Nota: En producción, reemplazar con tu modelo real
 dummy_data = pd.DataFrame({
     "Year": [2023, 2024, 2025],
     "Month": [1, 6, 12],
-    "City_Ciudad1": [1, 0, 0],
-    "City_Ciudad2": [0, 1, 0],
-    "City_Ciudad3": [0, 0, 1],
+    "City_num": [0, 1, 2],
     "Temp": [20, 25, 30]
 })
-
-X_dummy = dummy_data.drop("Temp", axis=1)
-y_dummy = dummy_data["Temp"]
-
 model = DecisionTreeRegressor()
-model.fit(X_dummy, y_dummy)
+model.fit(dummy_data[["Year", "Month", "City_num"]], dummy_data["Temp"])
 
-for col in X_dummy.columns:
-    if col not in df_encoded.columns:
-        df_encoded[col] = 0  # agregar columna faltante como 0
-
-df_encoded = df_encoded[X_dummy.columns]
-
-prediction = model.predict(df_encoded)
+# Predicción
+prediction = model.predict(X)
 
 st.subheader("Predicción de Temperatura")
 st.write(f"La temperatura estimada es: {prediction[0]:.2f} °C")
-
-prediccion = modelo.predict(df)[0]
-
-st.subheader("Predicción de temperatura")
-st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
 
