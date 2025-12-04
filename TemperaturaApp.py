@@ -6,11 +6,12 @@ from sklearn.linear_model import LinearRegression
 
 st.write("# Predicción de Temperatura en México")
 st.image("quiz.jpg", caption="Predicción de temperatura")
-
 st.header("Selecciona los datos")
 
-def user_input_features():
+# Cargar los datos antes de usarlos
+data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
+def user_input_features():
     Year = st.number_input(
         "Año:",
         min_value=1700,
@@ -44,14 +45,12 @@ def user_input_features():
     features = pd.DataFrame(user_input_data, index=[0])
     return features
 
+# Ahora sí podemos llamar a la función
+df_input = user_input_features()
 
-df = user_input_features()
-
-data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
-
+# Preparar datos para el modelo
 X = data[["Year", "Month", "City"]]
 y = data["AverageTemperature"]
-
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.30, random_state=1613726
@@ -60,8 +59,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 modelo = LinearRegression()
 modelo.fit(X_train, y_train)
 
-
-prediccion = modelo.predict(df)[0]
+# Predicción
+prediccion = modelo.predict(df_input)[0]
 
 st.subheader("Predicción de temperatura")
 st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
