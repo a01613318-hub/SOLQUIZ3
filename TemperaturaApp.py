@@ -38,7 +38,7 @@ def user_input_features():
     user_input_data = {
         "Year": Year,
         "Month": Month,
-        "City_num": City_num,
+        "City": City,
     }
 
     features = pd.DataFrame(user_input_data, index=[0])
@@ -49,7 +49,7 @@ df = user_input_features()
 
 data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
-X = data[["Year", "Month", "City_num"]]
+X = data[["Year", "Month", "City"]]
 y = data["AverageTemperature"]
 
 
@@ -65,3 +65,4 @@ prediccion = modelo.predict(df)[0]
 
 st.subheader("Predicción de temperatura")
 st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
+
