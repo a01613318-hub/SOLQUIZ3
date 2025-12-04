@@ -8,7 +8,6 @@ st.write("# Predicción de Temperatura en México")
 st.image("quiz.jpg", caption="Predicción de temperatura")
 st.header("Selecciona los datos")
 
-# Cargar datos
 data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
 def user_input_features():
@@ -28,9 +27,8 @@ def user_input_features():
         step=1,
     )
 
-    City = st.text_input("Ingresa el nombre de la ciudad:")  # <-- línea corregida
+    City = st.text_input("Ingresa el nombre de la ciudad:")
 
-    # Filtrar ciudad (asegúrate que la columna se llama exactamente 'city')
     filtrado = data[data['city'].str.lower() == City.lower()]
     if not filtrado.empty:
         st.write(filtrado.iloc[0])
@@ -46,22 +44,18 @@ def user_input_features():
     features = pd.DataFrame(user_input_data, index=[0])
     return features
 
-# Llamar la función
 df_input = user_input_features()
 
-# Preparar datos para el modelo
 X = data[["Year", "Month", "City"]]
-y = data["AverageTemperature"]  # Verifica que el nombre de la columna coincida
+y = data["AverageTemperature"]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.30, random_state=1613726
 )
 
-# Entrenar modelo
 modelo = LinearRegression()
 modelo.fit(X_train, y_train)
 
-# Predicción
 prediccion = modelo.predict(df_input)[0]
 
 st.subheader("Predicción de temperatura")
