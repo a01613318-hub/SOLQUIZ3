@@ -1,65 +1,57 @@
-import numpy as np
 import streamlit as st
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 
-st.write("# Predicción de Temperatura en México")
-st.image("quiz.jpg", caption="Predicción de temperatura")
-
-st.header("Selecciona los datos")
+st.title("Predicción de Temperatura")
 
 def user_input_features():
+    # Selección de ciudad
+    City = st.selectbox("Selecciona la ciudad", ["Ciudad1", "Ciudad2", "Ciudad3"])
+    
+  
+    Year = st.number_input("Año", min_value=2000, max_value=2050, value=2025)
+    Month = st.number_input("Mes", min_value=1, max_value=12, value=12)
+    
 
-    Year = st.number_input(
-        "Año:",
-        min_value=1700,
-        max_value=2025,
-        value=2000,
-        step=1,
-    )
-
-    Month = st.number_input(
-        "Mes (1-12):",
-        min_value=1,
-        max_value=12,
-        value=1,
-        step=1,
-    )
-
-    City_num = st.number_input(
-        "Ciudad (valor numérico):",
-        min_value=1,
-        max_value=100,
-        value=1,
-        step=1,
-    )
-
-    user_input_data = {
-        "Year": Year,
-        "Month": Month,
-        "City": City,
-    }
-
-    features = pd.DataFrame(user_input_data, index=[0])
-    return features
-
+    df = pd.DataFrame({"City": [City], "Year": [Year], "Month": [Month]})
+    return df
 
 df = user_input_features()
 
-data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
-
-X = data[["Year", "Month", "City"]]
-y = data["AverageTemperature"]
+st.subheader("Entradas del usuario")
+st.write(df)
 
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.30, random_state=1613726
-)
+df_encoded = pd.get_dummies(df, columns=["City"])
 
-modelo = LinearRegression()
-modelo.fit(X_train, y_train)
+st.subheader("Datos preparados para el modelo")
+st.write(df_encoded)
 
+dummy_data = pd.DataFrame({
+    "Year": [2023, 2024, 2025],
+    "Month": [1, 6, 12],
+    "City_Ciudad1": [1, 0, 0],
+    "City_Ciudad2": [0, 1, 0],
+    "City_Ciudad3": [0, 0, 1],
+    "Temp": [20, 25, 30]
+})
+
+X_dummy = dummy_data.drop("Temp", axis=1)
+y_dummy = dummy_data["Temp"]
+
+model = DecisionTreeRegressor()
+model.fit(X_dummy, y_dummy)
+
+for col in X_dummy.columns:
+    if col not in df_encoded.columns:
+        df_encoded[col] = 0  # agregar columna faltante como 0
+
+df_encoded = df_encoded[X_dummy.columns]
+
+prediction = model.predict(df_encoded)
+
+st.subheader("Predicción de Temperatura")
+st.write(f"La temperatura estimada es: {prediction[0]:.2f} °C")
 
 prediccion = modelo.predict(df)[0]
 
