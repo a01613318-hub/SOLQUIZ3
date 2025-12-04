@@ -27,12 +27,10 @@ def user_input_features():
         step=1,
     )
 
-    City_num = st.number_input(
-        "Ciudad (valor numérico):",
-        min_value=1,
-        max_value=100,
-        value=1,
-        step=1,
+    City = st.text_input("Ingresa el nombre de la ciudad:")
+
+    filtrado = df[df['city'].str.lower() == city_input.lower()]
+    st.write(filtrado.iloc[0])
     )
 
     user_input_data = {
@@ -64,4 +62,3 @@ modelo.fit(X_train, y_train)
 prediccion = modelo.predict(df)[0]
 
 st.subheader("Predicción de temperatura")
-st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
