@@ -55,7 +55,6 @@ def user_input_features():
 
 df_input = user_input_features()
 
-# Variables para entrenar
 X = data[["Year", "Month", "City_encoded"]]
 y = data["AverageTemperature"]
 
