@@ -42,7 +42,7 @@ def user_input_features():
         # Convertir la ciudad ingresada al valor numérico correspondiente
         City_encoded = encoder.transform([City.strip()])[0]
     else:
-        st.write("Ciudad no encontrada en el dataset.")
+        st.write("")
         City_encoded = -1  # Valor inválido para evitar crash
 
     user_input_data = {
