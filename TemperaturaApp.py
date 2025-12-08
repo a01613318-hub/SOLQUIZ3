@@ -71,4 +71,4 @@ if df_input["City_encoded"].iloc[0] != -1:
     st.subheader("Predicción de temperatura")
     st.write(f"La temperatura estimada es: **{prediccion:.2f} °C**")
 else:
-    st.write("No se puede predecir porque la ciudad no está en el dataset.")
+    st.write(" ")
