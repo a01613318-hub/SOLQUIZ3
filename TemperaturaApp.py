@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression
 
 st.write("Predicción de temperatura")
 st.image("quiz.jpg", caption="Modelo predictivo")
