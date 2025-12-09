@@ -24,17 +24,20 @@ def user_input_features():
 
 df_input = user_input_features()
 
-data = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
-X = data[["Year", "Month"]]
-y = data["AverageTemperature"]
+
+datos = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
+
+X = datos[["Year", "Month"]]
+y = datos["AverageTemperature"]
 
 model = LinearRegression()
 model.fit(X, y)
+_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=1613318
 
-df_model = df_input[["Year", "Month"]]
 
-prediccion = model.predict(df_model)[0]
+prediccion = model.predict(df)[0]
 
 st.subheader("Predicción de temperatura estimada")
 st.write(f"**Temperatura estimada:** {prediccion:.2f} °C")
