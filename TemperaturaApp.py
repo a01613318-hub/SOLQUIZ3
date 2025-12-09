@@ -26,7 +26,6 @@ def user_input_features():
 df_input = user_input_features()
 
 
-
 datos = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 
 X = datos[["Year", "Month"]]
@@ -34,9 +33,7 @@ y = datos["AverageTemperature"]
 
 model = LinearRegression()
 model.fit(X, y)
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.30, random_state=1613318
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=1613318)
 
 prediccion = model.predict(df_input)[0]
 
