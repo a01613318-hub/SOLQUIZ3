@@ -22,9 +22,7 @@ datos = pd.read_csv("MexicoTemperatures.csv", encoding="latin-1")
 X = datos[["Year", "Month"]]
 y = datos["AverageTemperature"]
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.30, random_state=1613318
-)
+X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.30, random_state=1613318)
 
 model = LinearRegression()
 model.fit(X_train, y_train)
