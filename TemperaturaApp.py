@@ -35,7 +35,7 @@ model = LinearRegression()
 model.fit(X, y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=1613318)
 
-prediccion = model.predict(df_input)[0]
+prediccion = model.predict(df_input[["Year", "Month"]])[0]
 
 st.subheader("Predicción de temperatura estimada")
 st.write(f"**Temperatura estimada:** {prediccion:.2f} °C")
